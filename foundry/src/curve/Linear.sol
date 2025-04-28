@@ -53,9 +53,9 @@ contract LinearThreshold is Operator, Curve {
             return minCeiling;
         }
 
-        uint256 slope = maxCeiling - ((minCeiling * PRECISION) / (maxSupply - minSupply));
-
-        uint256 ceiling = maxCeiling - ((slope * (_supply - minSupply)) / PRECISION);
+        uint256 slope = (maxCeiling - minCeiling) * PRECISION / (maxSupply - minSupply);
+        uint256 delta = (_supply - minSupply) * slope / PRECISION;
+        uint256 ceiling = maxCeiling - delta;
 
         return ceiling;
     }
