@@ -21,7 +21,7 @@ interface IPool {
 
     function balanceOf(uint256 _pid, address _owner) external view returns (uint256);
 
-    function rewawrdRatePerPool(uint256 _pid) external view returns (uint256);
+    function rewardRatePerPool(uint256 _pid) external view returns (uint256);
 
     function rewardPerToken(uint256 _pid) external view returns (uint256);
 
@@ -45,18 +45,17 @@ interface IPool {
 
 interface IPoolGov {
     /*//////////////////////////////////////////////////////////////
-                                  EVENTS
+                                  ERRORS
     //////////////////////////////////////////////////////////////*/
-    event RewardNotified(address indexed operator, uint256 amount, uint256 period);
+    error IPool__AlreadyFinished();
+    error IPool__NotStopped();
+    error IPool__Stopped();
 
     /*//////////////////////////////////////////////////////////////
-                            EXTERNAL TRANSACTIONS
+                                  EVENTS
     //////////////////////////////////////////////////////////////*/
-    function createPool(address _token, uint256 _rewardRate) external;
 
-    function updatePool(uint256 _pid, uint256 _rewardRate) external;
-
-    function removePool(uint256 _pid) external;
+    event RewardNotified(address indexed operator, uint256 amount, uint256 period);
 
     /*//////////////////////////////////////////////////////////////
                             EXTERNAL FUNCTIONS

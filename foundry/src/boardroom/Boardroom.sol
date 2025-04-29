@@ -260,9 +260,12 @@ contract BoardroomV2 is IBoardroomV2, IBoardroomV2Gov, TokenStoreWrapper, Ownabl
      * @dev claim reward tokens
      */
     function claimReward() public override updateReward(_msgSender()) {
-        for (uint256 i; i < s_rewardTokens.length(); ++i) {
+        for (uint256 i; i < s_rewardTokens.length(); ) {
             address token = s_rewardTokens.at(i);
             uint256 reward = s_seats[token][_msgSender()].rewardEarned;
+            unchecked {
+                ++i;
+            }
             if (reward > 0) {
                 s_seats[token][_msgSender()].rewardEarned = 0;
                 IERC20(token).safeTransfer(_msgSender(), reward);

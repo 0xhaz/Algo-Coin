@@ -70,16 +70,17 @@ contract PoolStoreTest is Test {
 
     function test_DepositWithdraw() public {
         vm.startPrank(operator);
-        poolStore.addPool("Test Pool", IERC20(address(0x789)), 1000);
-        vm.stopPrank();
+        poolStore.addPool("Test Pool", IERC20(address(mockToken)), 1000);
 
-        vm.startPrank(alice);
-        poolStore.deposit(0, alice, 100);
-        assertEq(poolStore.balanceOf(0, alice), 100);
+        vm.deal(address(mockToken), 100);
+        mockToken.mint(operator, 100);
+        mockToken.approve(address(poolStore), type(uint256).max);
+        poolStore.deposit(0, operator, 100);
+        assertEq(poolStore.balanceOf(0, operator), 100);
         assertEq(poolStore.totalSupply(0), 100);
 
-        poolStore.withdraw(0, alice, 50);
-        assertEq(poolStore.balanceOf(0, alice), 50);
+        poolStore.withdraw(0, operator, 50);
+        assertEq(poolStore.balanceOf(0, operator), 50);
         assertEq(poolStore.totalSupply(0), 50);
 
         vm.stopPrank();
