@@ -323,8 +323,40 @@ contract Distribution is IPool, IPoolGov, PoolStoreWrapper, Operator {
         return HALVE_REWARD_RATE;
     }
 
+    function getRewardRateBeforeHalve() external view returns (uint256) {
+        return rewardRateBeforeHalve;
+    }
+
     function getMaxRewardRate() external pure returns (uint256) {
         return MAX_REWARD_RATE;
+    }
+
+    function getShare() external view returns (address) {
+        return share;
+    }
+
+    function getPoolStore() external view returns (address) {
+        return address(store);
+    }
+
+    function getPeriodFinish() external view returns (uint256) {
+        return periodFinish;
+    }
+
+    function getStartTime() external view returns (uint256) {
+        return startTime;
+    }
+
+    function getPeriod() external view returns (uint256) {
+        return period;
+    }
+
+    function getRewardRate() external view returns (uint256) {
+        return rewardRate;
+    }
+
+    function getRewardRateExtra() external view returns (uint256) {
+        return rewardRateExtra;
     }
 
     /*//////////////////////////////////////////////////////////////

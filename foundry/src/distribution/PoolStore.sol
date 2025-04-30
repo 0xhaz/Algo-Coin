@@ -207,6 +207,7 @@ contract PoolStore is IPoolStore, IPoolStoreGov, Operator {
     function deposit(uint256 _pid, address _owner, uint256 _amount) public override onlyOperator checkPoolId(_pid) {
         pools[_pid].totalSupply += _amount;
         s_balances[_pid][_owner] += _amount;
+
         IERC20(tokenOf(_pid)).safeTransferFrom(_msgSender(), address(this), _amount);
 
         emit Deposit(_msgSender(), _owner, _pid, _amount);
