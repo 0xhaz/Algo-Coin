@@ -98,6 +98,34 @@ contract Feeder is Operator {
         }
     }
 
+    function getCashLP() external view returns (uint256) {
+        return cashLP;
+    }
+
+    function getCashVault() external view returns (uint256) {
+        return cashVault;
+    }
+
+    function getShareLP() external view returns (uint256) {
+        return shareLP;
+    }
+
+    function getBoardroom() external view returns (uint256) {
+        return boardroom;
+    }
+
+    function getBondroom() external view returns (uint256) {
+        return bondroom;
+    }
+
+    function getStrategicPair() external view returns (uint256) {
+        return strategicPair;
+    }
+
+    function getCommunityFund() external view returns (uint256) {
+        return communityFund;
+    }
+
     function _setBelowPegWeights() private {
         IPoolStoreGov(target).setPool(boardroom, BOARDROOM_WEIGHT_BELOW_PEG);
         IPoolStoreGov(target).setPool(bondroom, BONDROOM_WEIGHT_BELOW_PEG);
