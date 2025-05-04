@@ -21,12 +21,15 @@ abstract contract TreasuryState is Epoch {
     error Treasury__CashPriceMoved();
     error Treasury__CashPriceNotEligibleForBondPurchase();
     error Treasury__AmountExceedsBondCap();
+    error Treasury__NoMoreBudget();
     /*//////////////////////////////////////////////////////////////
                                 EVENTS
     //////////////////////////////////////////////////////////////*/
 
     event Initialized(address indexed executor, uint256 at);
     event Migration(address indexed target);
+    event BoughtBonds(address indexed buyer, uint256 amount);
+    event RedeemedBonds(address indexed buyer, uint256 amount);
 
     /*//////////////////////////////////////////////////////////////
                                 STATE VARIABLES

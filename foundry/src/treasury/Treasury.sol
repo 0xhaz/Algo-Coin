@@ -59,7 +59,7 @@ contract Treasury is TreasuryState, ContractGuard {
         address _fund,
         address _curve,
         uint256 _startTime
-    ) {
+    ) Epoch(1 days, _startTime, 0) {
         cash = _cash;
         bond = _bond;
         share = _share;
@@ -161,5 +161,30 @@ contract Treasury is TreasuryState, ContractGuard {
         checkStartTime
         checkOperator
         updatePrice
-    {}
+    {
+        if (amount <= 0) revert Treasury__ZeroAmount();
+
+        uint256 cashPrice = _getCashPrice(bOracle);
+        if (cashPrice < getCeilingPrice()) revert Treasury__CashPriceNotEligibleForBondPurchase();
+        if (IERC20(cash).balanceOf(address(this)) <= amount) revert Treasury__NoMoreBudget();
+
+        accumulatedSeigniorage = accumulatedSeigniorage - (Math.min(accumulatedSeigniorage, amount));
+
+        IBasisAsset(bond).burnFrom(_msgSender(), amount);
+        IERC20(cash).safeTransfer(_msgSender(), amount);
+
+        emit RedeemedBonds(_msgSender(), amount);
+    }
+
+    function allocateSeigniorage() external onlyOneBlock checkMigration checkStartTime checkEpoch checkOperator {
+        _updateCashPrice();
+        uint256 cashPrice = _getCashPrice(sOracle);
+        if (cashPrice <= getCeilingPrice()) return;
+
+        uint256 percentage = cashPrice - cashPriceOne;
+        uint256 seigniorage = (circulatingSupply() * percentage) / PRECISION;
+        IBasisAsset(cash).mint(address(this), seigniorage);
+
+        uint256 fundReserve = (seigniorage * fundAllocation) / PRECISION;
+    }
 }
