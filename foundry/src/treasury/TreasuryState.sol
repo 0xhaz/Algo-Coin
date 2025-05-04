@@ -7,7 +7,7 @@ import {Operator} from "src/access/Operator.sol";
 import {Epoch} from "src/utils/Epoch.sol";
 import {IBasisAsset} from "src/interfaces/IBasisAsset.sol";
 
-abstract contract TresuryState is Epoch {
+abstract contract TreasuryState is Epoch {
     /*//////////////////////////////////////////////////////////////
                                 ERRORS
     //////////////////////////////////////////////////////////////*/
@@ -16,6 +16,11 @@ abstract contract TresuryState is Epoch {
     error Treasury__NotInitialized();
     error Treasury__NotMigrated();
     error Treasury__Migrated();
+    error Treasury__OracleError();
+    error Treasury__ZeroAmount();
+    error Treasury__CashPriceMoved();
+    error Treasury__CashPriceNotEligibleForBondPurchase();
+    error Treasury__AmountExceedsBondCap();
     /*//////////////////////////////////////////////////////////////
                                 EVENTS
     //////////////////////////////////////////////////////////////*/
