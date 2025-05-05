@@ -16,6 +16,7 @@ import {Epoch} from "src/utils/Epoch.sol";
 import {SeigniorageProxy} from "src/treasury/SeigniorageProxy.sol";
 import {TreasuryState} from "src/treasury/TreasuryState.sol";
 import {ContractGuard} from "src/utils/ContractGuard.sol";
+import {ISimpleERCFund} from "src/interfaces/ISimpleERCFund.sol";
 
 /**
  * @title Basis Cash Treasury
@@ -185,6 +186,32 @@ contract Treasury is TreasuryState, ContractGuard {
         uint256 seigniorage = (circulatingSupply() * percentage) / PRECISION;
         IBasisAsset(cash).mint(address(this), seigniorage);
 
-        uint256 fundReserve = (seigniorage * fundAllocation) / PRECISION;
+        uint256 fundReserve = (seigniorage * fundAllocation) / 100;
+        if (fundReserve > 0) {
+            IERC20(cash).safeIncreaseAllowance(fund, fundReserve);
+            ISimpleERCFund(fund).deposit(cash, fundReserve, "Treasury: Seigniorage Allocation");
+
+            emit FundedToCommunityFund(block.timestamp, fundReserve);
+        }
+
+        seigniorage = seigniorage - fundReserve;
+
+        uint256 treasuryReserve = Math.min(seigniorage, IERC20(bond).totalSupply() - accumulatedSeigniorage);
+        if (treasuryReserve > 0) {
+            if (treasuryReserve == seigniorage) {
+                treasuryReserve = treasuryReserve * 80 / 100;
+            }
+            accumulatedSeigniorage = accumulatedSeigniorage + treasuryReserve;
+
+            emit TreasuryFunded(block.timestamp, treasuryReserve);
+        }
+
+        seigniorage = seigniorage - treasuryReserve;
+        if (seigniorage > 0) {
+            IERC20(cash).safeIncreaseAllowance(seigniorageProxy, seigniorage);
+            SeigniorageProxy(seigniorageProxy).allocateSeigniorage(seigniorage);
+
+            emit SeigniorageDistributed(block.timestamp, seigniorage);
+        }
     }
 }

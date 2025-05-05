@@ -30,6 +30,9 @@ abstract contract TreasuryState is Epoch {
     event Migration(address indexed target);
     event BoughtBonds(address indexed buyer, uint256 amount);
     event RedeemedBonds(address indexed buyer, uint256 amount);
+    event SeigniorageDistributed(uint256 timestamp, uint256 seigniorage);
+    event FundedToCommunityFund(uint256 timestamp, uint256 seigniorage);
+    event TreasuryFunded(uint256 timestamp, uint256 seigniorage);
 
     /*//////////////////////////////////////////////////////////////
                                 STATE VARIABLES
